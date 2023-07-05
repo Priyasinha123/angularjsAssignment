@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Manage Assets</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script type="text/javascript" src="angular.js"></script>
+ 	<script type="text/javascript" src="script.js"> </script>
+ 	<!-- <script type="text/javascript" src="angular/table_sort.js"></script> -->
+ 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<br>
+ </head>
+
+ <body ng-app="user-app">
+	<div class="container" ng-controller="user-ctrl">
+
+		<form ng-class="form_hidden" id="assets-entry-form" name="assets_form">
+			<h3>Add Assets</h3>
+			<hr>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						
+						<label for="assets_name">Assets Name:</label>
+			 			<input type="text" name="assets_name" class="form-control" ng-model="assets.asset_name" required>
+			 			<span class="error" ng-show="assets_form.assets_name.$touched && assets_form.assets_name.$error.required">Assets Name is required.</span>
+			 		
+			 		</div>
+					<div class="form-group">
+
+		 				<label for="assets_no">Assets No:</label>
+		 				<input type="text" name="assets_no" class="form-control" ng-model="assets.asset_no" required>
+		 				<span class="error" ng-show="assets_form.assets_no.$touched && assets_form.assets_no.$error.required">Assets No. is required.</span>
+
+		 			</div>
+					<div class="form-group">
+
+						<label for="assets_type">Assets Type:</label>
+			 			<select class="form-control" name="assets_type" ng-model="assets.asset_type" required>
+							<option value="" selected disabled>Select Type</option>
+							<option>HARDWARE</option>
+							<option>SOFTWARE</option>
+							<option>CONSUMABLE</option>
+						</select>
+						<span class="error" ng-show="assets_form.assets_type.$touched && assets_form.assets_type.$error.required">Assets Type is required.</span>
+
+					</div>
+		 		</div>
+		 		<div class="col-md-6">
+					<div class="form-group">
+					
+						<label for="assets_quantity">Quantity:</label>
+			 			<input type="text" name="assets_quantity" class="form-control" ng-model="assets.quantity" required ng-pattern="/^[0-9]{1,5}$/" >
+			 			<!-- <span class="error" ng-show="user_form.phone.$touched && user_form.phone.$error.pattern">Quantity should be numeric</span> -->
+			 			<span class="error" ng-show="assets_form.assets_quantity.$touched && assets_form.assets_quantity.$error.required">Quantity is required.</span>
+			 			<span class="error" ng-show="assets_form.assets_quantity.$touched && assets_form.assets_quantity.$error.pattern">Quantity should be numeric</span>
+		 			
+		 			</div>
+					<div class="form-group">
+
+			 			<label for="assets_location">Location:</label>
+			 			<input type="text" name="assets_location" class="form-control" ng-model="assets.location" required>
+			 			<span class="error" ng-show="assets_form.assets_location.$touched && assets_form.assets_location.$error.required">Location is required.</span>
+
+			 		</div>
+			 		<div class="form-group">
+						<label for="assets_department">Assets Department:</label>
+			 			<select class="form-control" name="assets_department" ng-model="assets.asset_department" required>
+							<option value="" selected disabled>Select Department</option>
+							<option>IT</option>
+							<option>HR</option>
+						</select>
+						<span class="error" ng-show="assets_form.assets_department.$touched && assets_form.assets_department.$error.required">Department is required.</span>
+					</div>
+
+					<input type="hidden" name="id" value="" ng-model="assets.id">
+
+		 		</div>
+		 		<div class="form-group text-right">
+					<button type="button" name="edit_user" id="edit_user" class="btn btn-secondary" ng-click="cancel_form()">Cancel</button>
+					<button  ng-disabled="assets_form.$invalid" type="button" name="edit_user" id="edit_user" class="btn btn-primary" ng-show="save_button"  ng-click="saveAssets()">Save</button>
+                    <button type="button" class="btn btn-primary" ng-show="update_button" ng-class="update_hidden" ng-click="updateAsset()">Update</button>
+				</div>
+		 	</div>
+	 	</form>
+
+ 		<h3>Manage Assets</h3>
+ 		<hr>
+ 		<div class="form-group text-right">
+	 		<button type="button" class="btn btn-primary" ng-show="add_button" ng-click="openForm()">Add</button>
+	 	</div>
+	 	<div class="form-group text-right">
+	 		<input type="text" name="search_text" ng-model="search_text" placeholder="Search">
+	 	</div>
+
+	 	<table class="table table-bordered table-responsive sortable">
+	 		<thead>
+		 		<tr>
+		 			<td>S.No.</td>
+		 			<td>Assets Name</td>
+		 			<td>Location</td>
+		 			<td>Quantity</td>
+		 			<td>Asset Type</td>
+		 			<td>Asset Department</td>
+		 			<td>Action</td>
+		 		</tr>
+	 		</thead>
+	 		<tr ng-repeat = "asset in assetsData | filter: search_text">
+
+				<td>{{$index+1}}.</td>
+				<td>{{asset.asset_name}}</td>
+				<td>{{asset.location}}</td>
+				<td>{{asset.quantity}}</td>
+				<td>{{asset.asset_type}}</td>
+				<td>{{asset.asset_department}}</td>
+				<td>
+					<button type="button" name="edit_user" id="edit_user" class="btn btn-primary" ng-click="editAsset(asset)">Edit</button>
+				</td>
+				<td>
+					<button type="button" name="delete_user" id="delete_user" class="btn btn-danger" ng-click="deleteAsset(asset.id)">Delete</button>
+
+				</td>
+
+			</tr>
+	 	</table>
+
+ 	</div>
+ </body>
+</html>
